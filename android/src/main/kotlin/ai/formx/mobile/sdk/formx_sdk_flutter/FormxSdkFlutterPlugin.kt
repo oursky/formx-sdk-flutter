@@ -57,12 +57,12 @@ class FormxSdkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "init" -> {
-                val formId = call.argument<String>("formId")
+                val extractorId = call.argument<String>("extractorId")
                 val accessToken = call.argument<String>("accessToken")
-                val endpoint = call.argument<String>("endpoint")
-                if (formId != null && accessToken != null) {
+                val apiHost = call.argument<String>("apiHost")
+                if (extractorId != null && accessToken != null) {
                     try {
-                        FormXSDKInitializer.init(formId, accessToken, endpoint)
+                        FormXSDKInitializer.init(extractorId, accessToken, apiHost)
                     } catch (e: Exception) {
                         result.error(runtimeError(e), e)
                         return

@@ -1,14 +1,21 @@
 package ai.formx.mobile.sdk.formx_sdk_flutter
 
+import ai.formx.mobile.sdk.ExtractDetailedData
+import ai.formx.mobile.sdk.ExtractDetailedDataFieldValue
+import ai.formx.mobile.sdk.ExtractDocument
+import ai.formx.mobile.sdk.ExtractDocumentData
+import ai.formx.mobile.sdk.ExtractDocumentMetaData
+import ai.formx.mobile.sdk.ExtractMetaData
 import ai.formx.mobile.sdk.FormXAPIDetectDocumentsResponse
 import ai.formx.mobile.sdk.FormXAPIExtractResponse
+import ai.formx.mobile.sdk.FormXAutoExtractionDoubleItem
 import ai.formx.mobile.sdk.FormXAutoExtractionIntItem
 import ai.formx.mobile.sdk.FormXAutoExtractionItem
-import ai.formx.mobile.sdk.FormXAutoExtractionItemType
-import ai.formx.mobile.sdk.FormXAutoExtractionPurchaseInfoItem
+import ai.formx.mobile.sdk.FormXAutoExtractionItemArray
+import ai.formx.mobile.sdk.FormXAutoExtractionPurchaseInfoValueItem
 import ai.formx.mobile.sdk.FormXAutoExtractionStringItem
-import ai.formx.mobile.sdk.FormXDocumentRegion
-import ai.formx.mobile.sdk.FormXPointF
+import ai.formx.mobile.sdk.FormXAutoExtractionUnsupportedItem
+import ai.formx.mobile.sdk.NestedFormXAutoExtractionItem
 
 fun FormXAPIDetectDocumentsResponse.toMap(): HashMap<String, Any> =
     HashMap<String, Any>().apply {
@@ -30,48 +37,107 @@ fun FormXAPIDetectDocumentsResponse.toMap(): HashMap<String, Any> =
 
 fun FormXAPIExtractResponse.toMap(): HashMap<String, Any> =
     HashMap<String, Any>().apply {
-        put("formId", formId)
         put("status", status)
-        put("autoExtractionItems",
-            autoExtractionItems.map { extractionItem ->
-                extractionItem.toMap()
-            })
+        put("metaData", metaData.toMap())
+        put("documents", documents.map {
+            it.toMap()
+        })
     }
 
-fun FormXAutoExtractionItem.toMap(): HashMap<String, Any> =
+fun ExtractMetaData.toMap(): HashMap<String, Any> =
     HashMap<String, Any>().apply {
-        put("type", type.name)
-        when (type) {
-            FormXAutoExtractionItemType.IntValueType -> (value as FormXAutoExtractionIntItem).let {
-                put("name", it.name)
-                put("value", it.value)
-            }
+        put("extractorId", extractorId)
+        put("requestId", requestId)
+        put("usage", usage)
+        jobId?.let {
+            put("jobId", it)
+        }
+    }
 
-            FormXAutoExtractionItemType.StringValueType -> (value as FormXAutoExtractionStringItem).let {
-                put("name", it.name)
-                put(
-                    "value",
-                    it.value
-                )
-            }
+fun ExtractDocument.toMap(): HashMap<String, Any> =
+    HashMap<String, Any>().apply {
+        put("extractorId", extractorId)
+        put("metaData", metaData.toMap())
+        type?.let {
 
-            FormXAutoExtractionItemType.PurhcaseInfoValueType ->
-                (value as FormXAutoExtractionPurchaseInfoItem).let { purchaseItem ->
-                    put("name", purchaseItem.name)
-                    put("value", purchaseItem.value.map { infoItem ->
-                        HashMap<String, String>().apply {
-                            put("name", infoItem.name ?: "")
-                            put("amount", Integer.parseInt(infoItem.amount ?: "0"))
-                            put("discount", (infoItem.discount ?: "0").toDouble())
-                            put("sku", infoItem.sku ?: "")
-                            put("quantity", Integer.parseInt(infoItem.quantity ?: "0"))
-                            put("unitPrice", (infoItem.unitPrice ?: "0").toDouble())
-                        }
-                    })
+            put("type", it)
+        }
+        typeConfidence?.let {
+            put("typeConfidence", it)
+        }
+        put("data", data.toMap())
+        put("detailedData", detailedData.toMap())
+        boundingBox?.let {
+            put("boundingBox", it)
+        }
+    }
+
+fun ExtractDocumentMetaData.toMap(): HashMap<String, Any> =
+    HashMap<String, Any>().apply {
+        put("extractorType", extractorType)
+        put("pageNo", pageNo)
+        put("sliceNo", sliceNo)
+        put("orientation", orientation)
+    }
+
+fun FormXAutoExtractionItem.toMap(): HashMap<String, Any?> =
+    HashMap<String, Any?>().also {
+        it["type"] = this::class.java.simpleName
+        when (this) {
+            is FormXAutoExtractionDoubleItem -> it["value"] = this.value
+            is FormXAutoExtractionIntItem -> it["value"] = this.value
+            is FormXAutoExtractionItemArray -> it["value"] = value.map { v -> v.toMap() }
+
+            is FormXAutoExtractionPurchaseInfoValueItem -> it["value"] =
+                HashMap<String, Any?>().apply {
+                    put("name", name)
+                    put("amount", amount ?: 0.0)
+                    put("discount", discount)
+                    put("sku", sku)
+                    put("quantity", quantity ?: 0)
+                    put("unitPrice", unitPrice ?: 0.0)
                 }
 
-            FormXAutoExtractionItemType.UnsupportedValueType -> put("value", value.toString())
+            is FormXAutoExtractionStringItem -> it["value"] = this.value
+            is FormXAutoExtractionUnsupportedItem -> it["value"] = this.value
+            is NestedFormXAutoExtractionItem -> {
+                it["value"] = HashMap<String, Any?>().also { nestedMap ->
+                    for (entry in value.entries) {
+                        nestedMap[entry.key] = entry.value?.toMap()
+                    }
+                }
+            }
         }
+    }
+
+fun ExtractDocumentData.toMap(): HashMap<String, Any?> =
+    HashMap<String, Any?>().apply {
+        put("fields", fields.map { field ->
+            HashMap<String, Any?>().also { fieldMap ->
+                fieldMap["name"] = field.name
+                fieldMap["value"] = field.value?.toMap()
+            }
+        })
+    }
+
+fun ExtractDetailedDataFieldValue.toMap(): HashMap<String, Any?> =
+    HashMap<String, Any?>().apply {
+        put("extractedBy", extractedBy)
+        put("confidence", confidence)
+        put("valueType", valueType)
+        put("value", value?.toMap())
+    }
+
+fun ExtractDetailedData.toMap(): HashMap<String, Any> =
+    HashMap<String, Any>().apply {
+        put("fields", fields.map {
+            HashMap<String, Any>().apply {
+                put("name", it.name)
+                put("value", it.value.map { v ->
+                    v?.toMap()
+                })
+            }
+        })
     }
 
 

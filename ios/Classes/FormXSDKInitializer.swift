@@ -8,12 +8,12 @@ import FormX
 
 class FormXSDKInitializer {
     static let shared = FormXSDKInitializer()
-    var formId: String?
+    var extractorId: String?
     
     private var currentApiClient: FormXAPIClient? = nil
     
-    func `init`(formId: String, accessToken: String, apiHost: String? = nil) {
-        self.formId = formId
+    func `init`(extractorId: String, accessToken: String, apiHost: String? = nil) {
+        self.extractorId = extractorId
         currentApiClient = FormXAPIClient(accessToken: accessToken, apiHost: apiHost)
     }
     

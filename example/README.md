@@ -15,14 +15,14 @@ First, you will need an Access Token and the Form ID of a Pre-Built Receipt Extr
    - Click 'Create new extractor' button of 'Extractors' page on FormX Portal.
    - Select 'Receipts' in the list of built-in extractors.
    - Enter a name for the extractor and create it.
-   - Open 'Extract' tab in your extractor detail page to obtain the `Form ID`.
+   - Open 'Extract' tab in your extractor detail page to obtain the `Extractor ID`.
 
-Created `.env` in example project then configure the FormX SDK using the `form id` and `access token`:
+Created `.env` in example project then configure the FormX SDK using the `extractor id` and `access token`:
 
 ```bash
 # example/.env
 
-FORMX_FORM_ID=<FORM ID>
+FORMX_EXTRACTOR_ID=<EXTRACTOR ID>
 FORMX_ACCESS_TOKEN=<ACCESS TOKEN>
 ```
 ## Installation

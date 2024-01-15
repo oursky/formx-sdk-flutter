@@ -186,7 +186,7 @@ class _SDKMethodsDemoScreenState extends State {
               ),
               if (_extractionResult != null)
                 Text(
-                    "result ${_extractionResult!.status}\nextracted item count: ${_extractionResult!.autoExtractionItems.length}"),
+                    "result ${_extractionResult!.status}\nextracted document count: ${_extractionResult!.documents.length}"),
               if (_extractionError != null) Text(_extractionError.toString()),
               Row(
                 children: [

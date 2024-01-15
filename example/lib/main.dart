@@ -6,7 +6,6 @@ import 'package:formx_sdk_flutter/formx_sdk_flutter.dart';
 import 'package:formx_sdk_flutter_example/screens/camera_screen.dart';
 import 'package:formx_sdk_flutter_example/screens/extraction_screen.dart';
 import 'package:formx_sdk_flutter_example/screens/home_screen.dart';
-import 'package:formx_sdk_flutter_example/screens/nest_value_info_screen.dart';
 import 'package:formx_sdk_flutter_example/screens/preview_image_screen.dart';
 import 'package:formx_sdk_flutter_example/screens/sdk_methods_demo_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -16,9 +15,9 @@ Future<void> main() async {
 
   final apiHost = dotenv.maybeGet("FORMX_API_HOST", fallback: "")!;
   await FormXSDK.init(
-    formId: dotenv.env["FORMX_FORM_ID"] ?? "<FILL_IN_FORM_ID>",
+    extractorId: dotenv.env["FORMX_EXTRACTOR_ID"] ?? "<FILL_IN_EXTRACTOR_ID>",
     accessToken: dotenv.env["FORMX_ACCESS_TOKEN"] ?? "<FILL_IN_ACCESS_TOKEN>",
-    endpoint: apiHost.isNotEmpty ? apiHost : null,
+    apiHost: apiHost.isNotEmpty ? apiHost : null,
   );
   runApp(const MyApp());
 }
@@ -40,11 +39,6 @@ final _router = GoRouter(routes: [
   GoRoute(
     path: "/extraction",
     builder: (_, state) => ExtractionScreen(state.extra as Uri),
-  ),
-  GoRoute(
-    path: "/nest_value_info",
-    builder: (_, state) =>
-        NestValueInfoScreen(state.extra as FormXAutoExtractionPurchaseInfoItem),
   ),
 ]);
 

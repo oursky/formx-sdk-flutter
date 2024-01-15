@@ -25,9 +25,9 @@ abstract class FormxSdkFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> init(String formId, String accessToken, String? endpoint) {
+  Future<void> init(String extractorId, String accessToken, String? apiHost) {
     throw UnimplementedError(
-        'init(formId, accessToken, endpoint) has not been implemented.');
+        'init(extractorId, accessToken, apiHost) has not been implemented.');
   }
 
   Future<FormXDetectDocumentsResult?> detect(String imagePath) {

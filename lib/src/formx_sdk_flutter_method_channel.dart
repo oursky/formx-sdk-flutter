@@ -12,13 +12,13 @@ class MethodChannelFormxSdkFlutter extends FormxSdkFlutterPlatform {
   final methodChannel = const MethodChannel('formx_sdk_flutter');
 
   @override
-  Future<void> init(String formId, String accessToken, String? endpoint) {
+  Future<void> init(String extractorId, String accessToken, String? apiHost) {
     return methodChannel.invokeMethod<void>(
         'init',
         Map.of({
-          "formId": formId,
+          "extractorId": extractorId,
           "accessToken": accessToken,
-          "endpoint": endpoint
+          "apiHost": apiHost
         }));
   }
 

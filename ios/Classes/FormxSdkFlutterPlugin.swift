@@ -15,10 +15,10 @@ public class FormxSdkFlutterPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "init":
             if let arguments = call.arguments as? Dictionary<String, Any>,
-               let formId = arguments["formId"] as? String,
+               let extractorId = arguments["extractorId"] as? String,
                let accessToken = arguments["accessToken"] as? String{
-                let apiEndpoint = arguments["endpoint"] as? String
-                FormXSDKInitializer.shared.`init`(formId: formId, accessToken: accessToken, apiHost: apiEndpoint)
+                let apiEndpoint = arguments["apiHost"] as? String
+                FormXSDKInitializer.shared.`init`(extractorId: extractorId, accessToken: accessToken, apiHost: apiEndpoint)
                 result(nil)
             } else {
                 result(FormXError.validationError(message: "missing required parameters").asFlutterError())
@@ -64,7 +64,7 @@ public class FormxSdkFlutterPlugin: NSObject, FlutterPlugin {
                 return
             }
             guard let formXApiClient = FormXSDKInitializer.shared.apiClient,
-                  let formId = FormXSDKInitializer.shared.formId else {
+                  let extractorId = FormXSDKInitializer.shared.extractorId else {
                 result(FormXError.formXSDKNotInitialized().asFlutterError())
                 return
             }
@@ -77,7 +77,7 @@ public class FormxSdkFlutterPlugin: NSObject, FlutterPlugin {
                     }
                     return
                 }
-                formXApiClient.extract(formId: formId, data: imageData) {response, error in
+                formXApiClient.extract(extractorId: extractorId, data: imageData) {response, error in
                     
                     DispatchQueue.main.async {
                         if let err = error {
