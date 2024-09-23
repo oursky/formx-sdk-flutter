@@ -87,3 +87,6 @@ Scaffold(
 ```
 _For complete tutorial please refer to [example app doc](https://github.com/oursky/formx-sdk-flutter/tree/main/example)_
 
+## Publish library
+
+https://docs.flutter.dev/packages-and-plugins/developing-packages#publish
