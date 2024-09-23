@@ -89,4 +89,6 @@ _For complete tutorial please refer to [example app doc](https://github.com/ours
 
 ## Publish library
 
-https://docs.flutter.dev/packages-and-plugins/developing-packages#publish
+1. Prepare release note (see commit [c50ec90](https://github.com/oursky/formx-sdk-flutter/commit/c50ec904d087968eca27144c708c2bbf0a00209b))
+
+2. Publish via flutter commands (see https://docs.flutter.dev/packages-and-plugins/developing-packages#publish)
